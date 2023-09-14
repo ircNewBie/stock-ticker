@@ -1,4 +1,6 @@
 from utils.data import Data
+from utils.chart import Charts
+
 from datetime import date, timedelta
 import argparse
 
@@ -19,6 +21,11 @@ tickers = [
 csvFolderPath = "../data/raw"
 processedCsvFolderPath = "../data/processed"
 
+def renderChart(ticker):
+    charts = Charts()  
+    csvFile = f"{csvFolderPath}/{ticker}.csv"
+    charts.render(csvFile)
+     
 def fetchData():
     nDays = 60
     startDate = date.today() - timedelta(days=nDays)
@@ -53,8 +60,18 @@ def main():
     parser = argparse.ArgumentParser(description="Command-Line options")
     parser.add_argument("--fetch-data", action="store_true", help="Pull market data from api.")
     parser.add_argument("--csv-path", action="store_true", help="Show full file path location of CSV files.")
+    parser.add_argument("--chart", action="store_true", help="Show / render ticker chart")
 
     args = parser.parse_args()
+
+    if args.chart:
+       ticker = input("     Ticker Symbol :  ")
+
+       if(ticker.upper() not in tickers):
+        #    maybe add some immediate fetching 
+           print("Ticker not found")
+       else:
+            renderChart(ticker.upper())
 
     if args.fetch_data:
         fetchData()
@@ -63,7 +80,7 @@ def main():
         print ("Raw CSV files are saved in " +csvFolderPath)
         print ("Processed CSV files are saved in " +processedCsvFolderPath)
 
-
+    print ("Type `python main.py --help` for available options.")
     
 
 if __name__ == "__main__":
