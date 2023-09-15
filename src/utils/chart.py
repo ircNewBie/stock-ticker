@@ -14,8 +14,8 @@ class Charts:
     def render(
             self,
             csvFile: str, 
-            slowPeriod: int = 5 , 
-            fastPeriod: int = 20
+            slowPeriod: int = 20 , 
+            fastPeriod: int = 5
             ):
 
         chart = Chart()

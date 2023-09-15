@@ -13,13 +13,11 @@ class Data:
         self.dataProvider = dataProvider
 
 
-
     def fetch(self, apiUri):
         apiKey = self.config.getApiKey(self.dataProvider)
         headers = {
             'Content-Type': 'application/json',
             'Authorization' : f'Token {apiKey}'
-
         }
 
         requestResponse = requests.get(apiUri, headers=headers)
@@ -38,7 +36,6 @@ class Data:
                         eg: 20-day SMA, days = 20
         '''
         df[f'{days}-Day-SMA'] = df[price].rolling(window=days).mean().fillna(0)
-
         return df
 
 

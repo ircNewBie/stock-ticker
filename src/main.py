@@ -26,8 +26,8 @@ def renderChart(ticker):
     csvFile = f"{csvFolderPath}/{ticker}.csv"
     charts.render(csvFile)
      
-def fetchData():
-    nDays = 60
+def fetchData(nDays = 60):
+    # nDays = 60
     startDate = date.today() - timedelta(days=nDays)
     endDate = date.today()
 
@@ -41,7 +41,6 @@ def fetchData():
         processedData[ticker] = data.calcSMA( rawData[ticker], "close", 5 )
         processedData[ticker] = data.calcSMA( rawData[ticker], "close", 20 )
 
-        print(processedData[ticker])
         # Saving raw data frame to csv
         print("Saving raw data ...")
         if data.saveDf2Csv(rawData[ticker], csvFolderPath, ticker + ".csv"):
@@ -49,7 +48,7 @@ def fetchData():
         else:
             print("Failed")
 
-         # Saving derived / processed  dframe  to csv
+         # Saving derived  dframe  to csv
         print("Saving derived data ...")
         if data.saveDf2Csv(rawData[ticker], processedCsvFolderPath, ticker + ".csv"):
             print("Success")
@@ -57,12 +56,16 @@ def fetchData():
             print("Failed")
 
 def main():
-    parser = argparse.ArgumentParser(description="Command-Line options")
+    parser = argparse.ArgumentParser(description="Command-Line")
     parser.add_argument("--fetch-data", action="store_true", help="Pull market data from api.")
     parser.add_argument("--csv-path", action="store_true", help="Show full file path location of CSV files.")
     parser.add_argument("--chart", action="store_true", help="Show / render ticker chart")
+    parser.add_argument("--show-bullish", action="store_true", help="Show tickers that are potentially bullish")
 
     args = parser.parse_args()
+    
+    if args.show_bullish:
+       print("Stocks that are potentially bullish.")
 
     if args.chart:
        ticker = input("     Ticker Symbol :  ")
@@ -74,6 +77,17 @@ def main():
             renderChart(ticker.upper())
 
     if args.fetch_data:
+        print(" How many days of market price data to fetch?")
+        daysOfData = input(" Default is 60 days, maximum of 365 days : _ ")
+      
+        if daysOfData.isalnum():
+            daysOfData = int(daysOfData)
+            if(daysOfData > 60 and daysOfData <= 365 ):
+                print (f"Overiding the default 60 days. Fetching {daysOfData} days.")
+                fetchData(daysOfData)
+                return
+
+        print (f"Unable to fetch {daysOfData} days. Fetching  60 days.")
         fetchData()
     
     if args.csv_path:

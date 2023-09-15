@@ -1,3 +1,4 @@
 ticker-env/*
 src/utils/__pycache__/*
+src/utils/__pycache__
 src/utils/*.pyc
