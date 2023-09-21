@@ -2,6 +2,6 @@ ticker-env/*
 src/utils/__pycache__/*
 src/utils/__pycache__
 src/utils/*.pyc
-data/processed/*
-data/raw/*
+data/processed/*.*
+data/raw/*.*
 src/*.ticker
