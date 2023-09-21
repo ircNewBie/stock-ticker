@@ -1,6 +1,19 @@
 from dotmap import DotMap
 import json
 
+tickers = [
+    "TSLA",  # TESLA
+    "NVDA",  # NVIDIA CORP
+    "AVGO",  # Broadcom
+    "MSFT",  # Microsoft
+    "AMZN",  # Amazo
+    "ORCL",  # Oraclen
+    "GOOG",  # Google
+    "META",  # Facebook
+    "AMD",   # ADVANCED MICRO DEVICES INC
+    "BABA"   # ALIBABA GROUP HOLDING LTD
+]
+
 class Config:
     def __init__(self, config_file_path):
         self.config = self._load_config(config_file_path)
@@ -17,3 +30,10 @@ class Config:
             if k == key:
                 return current[k]
         return None
+
+class TickersConf:
+    def __init__(self) -> None:
+        self.tickers = tickers
+
+    def get(self):
+        return self.tickers

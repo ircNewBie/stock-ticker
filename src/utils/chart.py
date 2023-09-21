@@ -14,13 +14,13 @@ class Charts:
     def render(
             self,
             csvFile: str, 
-            slowPeriod: int = 5 , 
-            fastPeriod: int = 20
-            ):
+            slowPeriod: int = 20 , 
+            fastPeriod: int = 5
+        ):
 
         chart = Chart()
-        
-        chart.watermark(csvFile, color='rgba(180, 180, 240, 0.7)')
+        ticker = csvFile.split('/')[-1].split('.')[0]
+        chart.watermark(ticker, color='rgba(180, 180, 240, 0.7)')
         
         try:
             df = pd.read_csv(csvFile)
