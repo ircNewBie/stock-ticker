@@ -61,11 +61,24 @@ After completing the installation steps, you can run your Python project within 
 
 ## Additional Notes
 
+- Signup to  `https://www.tiingo.com/` for API key
+- Edit the `config/config.json_sample` and save as  `config.json`
+
+```json
+    {
+        "apiKey": {
+            "tiingo": "replace-this-value-with-your-key"
+        }
+    }
+```
+
+## Starting the Script
+
 The following are the command-line options to run the project:
 ```
 make sure you are at './<main-project-folder>/src'  directory to start.
 Command-Line: 
-    python main.py --feth-data
+    python main.py --fetch-data
 
 other options:
 ------------------------------------------------------
