@@ -15,7 +15,7 @@ Before you begin, ensure that you have the following prerequisites installed:
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/ircNewBie/stock-ticker>
+git clone https://github.com/ircNewBie/stock-ticker
 cd stock-ticker
 ```
 
