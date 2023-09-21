@@ -2,6 +2,5 @@ ticker-env/*
 src/utils/__pycache__/*
 src/utils/__pycache__
 src/utils/*.pyc
-data/processed/*.csv
-data/raw/*.csv
+data/*/*.csv
 src/*.ticker
