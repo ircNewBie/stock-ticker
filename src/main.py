@@ -1,5 +1,8 @@
 from utils.data import Data
 from utils.chart import Charts
+from utils.tickerutils import Tickers
+from utils.config import TickersConf
+
 
 from datetime import date, timedelta
 import argparse
@@ -9,17 +12,12 @@ data = Data("tiingo")
 rawData = dict() 
 processedData = dict()
 
-tickers = [
-    "TSLA",  # TESLA
-    "NVDA",  # NVIDIA CORP
-    "AVGO",  # Broadcom
-    "AMD",   # ADVANCED MICRO DEVICES INC
-    "BABA"   # ALIBABA GROUP HOLDING LTD
-]
-
-
 csvFolderPath = "../data/raw"
 processedCsvFolderPath = "../data/processed"
+
+tickersAtConfig = TickersConf()
+tickerUtils =  Tickers(processedCsvFolderPath)
+tickers = tickersAtConfig.get()
 
 def renderChart(ticker):
     charts = Charts()  
@@ -61,19 +59,30 @@ def main():
     parser.add_argument("--csv-path", action="store_true", help="Show full file path location of CSV files.")
     parser.add_argument("--chart", action="store_true", help="Show / render ticker chart")
     parser.add_argument("--show-bullish", action="store_true", help="Show tickers that are potentially bullish")
+    parser.add_argument("--show-bearish", action="store_true", help="Show tickers that are potentially bearish")
+    parser.add_argument("--show-tickers", action="store_true", help="Show tickers that are configured")
 
     args = parser.parse_args()
-    
+
+    if args.show_tickers:
+        print("Show configured Stocks' tickers.")
+        tickerUtils.getTickers()
+
     if args.show_bullish:
-       print("Stocks that are potentially bullish.")
+        print("Stocks that are potentially bullish.")
+        tickerUtils.showBullish()
+    
+    if args.show_bearish:
+        print("Stocks that are potentially bearish.")
+        tickerUtils.showBearish()
 
     if args.chart:
-       ticker = input("     Ticker Symbol :  ")
+        ticker = input("     Ticker Symbol :  ")
 
-       if(ticker.upper() not in tickers):
-        #    maybe add some immediate fetching 
-           print("Ticker not found")
-       else:
+        if(ticker.upper() not in tickers):
+            #    maybe add some immediate fetching 
+            print("Ticker not found")
+        else:
             renderChart(ticker.upper())
 
     if args.fetch_data:
@@ -95,7 +104,6 @@ def main():
         print ("Processed CSV files are saved in " +processedCsvFolderPath)
 
     print ("Type `python main.py --help` for available options.")
-    
 
 if __name__ == "__main__":
     main()

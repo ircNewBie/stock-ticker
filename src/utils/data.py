@@ -35,7 +35,7 @@ class Data:
              days:      the number of days to calculate 
                         eg: 20-day SMA, days = 20
         '''
-        df[f'{days}-Day-SMA'] = df[price].rolling(window=days).mean().fillna(0)
+        df[f'{days}DaySMA'] = df[price].rolling(window=days).mean().fillna(0)
         return df
 
 
