@@ -1,4 +1,5 @@
 from dotmap import DotMap
+import pickle
 import json
 
 tickers = [
@@ -7,11 +8,11 @@ tickers = [
     "AVGO",  # Broadcom
     "MSFT",  # Microsoft
     "AMZN",  # Amazo
-    "ORCL",  # Oraclen
-    "GOOG",  # Google
-    "META",  # Facebook
-    "AMD",   # ADVANCED MICRO DEVICES INC
-    "BABA"   # ALIBABA GROUP HOLDING LTD
+    # "ORCL",  # Oraclen
+    # "GOOG",  # Google
+    # "META",  # Facebook
+    # "AMD",   # ADVANCED MICRO DEVICES INC
+    # "BABA"   # ALIBABA GROUP HOLDING LTD
 ]
 
 class Config:
@@ -33,7 +34,29 @@ class Config:
 
 class TickersConf:
     def __init__(self) -> None:
-        self.tickers = tickers
+        self.tickerConf = './tickers.cfg'
+        try:
+            configFile = open(self.tickerConf, 'rb')
+            self.tickers = pickle.load(configFile)
+            configFile.close()
+
+        except:
+            self.tickers = tickers
+            configFile = open(self.tickerConf, 'wb')
+            self.tickers = pickle.dump(self.tickers, configFile)
+            configFile.close()
 
     def get(self):
+        return self.tickers
+    
+    def addTicker(self, tickerSymbol):
+        configFile = open(self.tickerConf, 'rb')
+        self.tickers = pickle.load(configFile)
+        configFile.close()
+
+        self.tickers.append(tickerSymbol)
+        configFile = open(self.tickerConf, 'wb')
+        pickle.dump(self.tickers, configFile)
+        configFile.close()
+
         return self.tickers

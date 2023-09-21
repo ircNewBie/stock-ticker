@@ -2,6 +2,7 @@ from utils.data import Data
 from utils.chart import Charts
 from utils.tickerutils import Tickers
 from utils.config import TickersConf
+import pickle
 
 
 from datetime import date, timedelta
@@ -46,7 +47,7 @@ def fetchData(nDays = 60):
         else:
             print("Failed")
 
-         # Saving derived  dframe  to csv
+        # Saving derived  dframe  to csv
         print("Saving derived data ...")
         if data.saveDf2Csv(rawData[ticker], processedCsvFolderPath, ticker + ".csv"):
             print("Success")
@@ -55,18 +56,47 @@ def fetchData(nDays = 60):
 
 def main():
     parser = argparse.ArgumentParser(description="Command-Line")
-    parser.add_argument("--fetch-data", action="store_true", help="Pull market data from api.")
-    parser.add_argument("--csv-path", action="store_true", help="Show full file path location of CSV files.")
+    parser.add_argument("--fetch-data", action="store_true", help="Pull market data from api. This should run first and foremost.")
     parser.add_argument("--chart", action="store_true", help="Show / render ticker chart")
     parser.add_argument("--show-bullish", action="store_true", help="Show tickers that are potentially bullish")
     parser.add_argument("--show-bearish", action="store_true", help="Show tickers that are potentially bearish")
     parser.add_argument("--show-tickers", action="store_true", help="Show tickers that are configured")
+    parser.add_argument("--add-ticker", action="store_true", help="Add ticker to be configured")
+    parser.add_argument("--top-buy", action="store_true", help="Show tickers that are possible to go higher on the next following days")
 
     args = parser.parse_args()
 
+    if args.top_buy:
+        try:
+            filePath = './potential-buy.ticker'
+            file = open(filePath, 'rb')
+            print("Potential Stocks that are possible to go higher on the next following days.")
+            potentialBuy = pickle.load(file)
+            file.close()
+
+            print(potentialBuy)
+
+        except FileNotFoundError:
+            print('Not found! Scanning...')
+            tickerUtils._tickerScan()
+            file = open(filePath, 'rb')
+            potentialBuy = pickle.load(file)
+            file.close()
+            print(potentialBuy)
+        
+
     if args.show_tickers:
-        print("Show configured Stocks' tickers.")
-        tickerUtils.getTickers()
+        print("Configured Stock tickers.")
+        print(tickerUtils.getTickers())
+    
+    if args.add_ticker:
+        ticker = input("     Ticker Symbol to Add :  ")
+
+        if(ticker.upper()  in tickers):
+            print("Ticker already configured")
+        else:
+            print("Configured Stock tickers.")
+            print(tickersAtConfig.addTicker(ticker.upper()))
 
     if args.show_bullish:
         print("Stocks that are potentially bullish.")
@@ -98,10 +128,6 @@ def main():
 
         print (f"Unable to fetch {daysOfData} days. Fetching  60 days.")
         fetchData()
-    
-    if args.csv_path:
-        print ("Raw CSV files are saved in " +csvFolderPath)
-        print ("Processed CSV files are saved in " +processedCsvFolderPath)
 
     print ("Type `python main.py --help` for available options.")
 
