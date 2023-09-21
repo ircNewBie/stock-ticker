@@ -1,4 +1,5 @@
 import pandas as pd
+import pickle
 from .config import TickersConf
 
 
@@ -7,38 +8,34 @@ class Tickers:
         self.dataSourcePath = dataSourcePath
         self.bullishStocks = {}
         self.bearishStocks = {}
+        self.potentialBuy = []
         self.tickers = TickersConf().get()
 
-    def potentialBuy(self):
+    def _potentialBuy(self, slowSMA: int ,  priceData )->bool: 
         '''
         Rule: when on uptrend i.e. fast SMA  > slow SMA:
              + When price closes at around slow-SMA
-                **  there is a probability bias towards price pull-back  on
+                **  there is a probability bias that price may bounce / pull-back  on
                     this dynamic support levels
-                **  We can add some confirmation indicator here
-                    but for this project, there is none yet.
         '''
+        closePrice = priceData["close"].values[0]
+        return closePrice <= slowSMA
+
 
     def getTickers(self):
-        print("Tickers configured")
-        for ticker in self.tickers:
-            print(ticker)
-        
         return self.tickers
 
     def showBullish(self):
         print("Potentially Bullish Stocks: ")
         self._tickerScan()
-        for bullish in self.bullishStocks:
-            print (bullish) 
-        # print(self.bullishStocks)
+        for ticker in self.bullishStocks:
+            print (ticker) 
 
     def showBearish(self):
         print("Potentially Bearish Stocks: ")
         self._tickerScan()
-        for bearish in self.bearishStocks:
-            print (bearish) 
-        # print(self.bearishStocks)
+        for ticker in self.bearishStocks:
+            print (ticker) 
 
 
     def _setSmaData(self, df, period: int = 20):
@@ -49,11 +46,16 @@ class Tickers:
 
     
     def _tickerScan(self):
-        print("Scanning tickers")
 
+        # Scanning Tickers 
         for ticker in self.tickers:
             csvFile = self.dataSourcePath +"/" + ticker + ".csv"
-            df = pd.read_csv(csvFile)
+            try:
+                df = pd.read_csv(csvFile)
+            except FileNotFoundError:
+                print(f"The file '{csvFile}' does not exist.")
+                print("Make sure `--fetch-data` have been executed first. ")
+                return
             
             dayAgoPrice = df.tail(1)
 
@@ -63,8 +65,18 @@ class Tickers:
             if(fastSMA > slowSMA): 
                 self.bullishStocks[ticker] = dayAgoPrice
 
+                if (self._potentialBuy(slowSMA, dayAgoPrice)):
+                    self.potentialBuy.append(ticker)
+                    
             if(fastSMA < slowSMA): 
                 self.bearishStocks[ticker] = dayAgoPrice
+            
+        # Dumping self.potentialBuy variable to file
+        file = open('potential-buy.ticker', 'wb')
+        pickle.dump(self.potentialBuy, file)
+        file.close()
+
+
             
 
    

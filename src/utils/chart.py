@@ -18,12 +18,18 @@ class Charts:
             fastPeriod: int = 5
         ):
 
-        chart = Chart()
-        ticker = csvFile.split('/')[-1].split('.')[0]
-        chart.watermark(ticker, color='rgba(180, 180, 240, 0.7)')
-        
         try:
-            df = pd.read_csv(csvFile)
+            chart = Chart()
+            ticker = csvFile.split('/')[-1].split('.')[0]
+            chart.watermark(ticker, color='rgba(180, 180, 240, 0.7)')
+
+            try:
+                df = pd.read_csv(csvFile)
+            except FileNotFoundError:
+                print(f"The file '{csvFile}' does not exist.")
+                print("Make sure `--fetch-data` have been executed first before viewing the chart. ")
+                return
+            
             chart.set(df)
 
             slowLine = chart.create_line(f'{slowPeriod}-SMA')
