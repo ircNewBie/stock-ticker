@@ -71,25 +71,18 @@ def main():
             filePath = './potential-buy.ticker'
             file = open(filePath, 'rb')
             print("Potential Stocks that are possible to go higher on the next following days.")
-        except FileNotFoundError:
-            print(f"The file '{filePath}' does not exist.")
-            print("Make sure `--fetch-data` have been executed first. ")
-            return
-              
-        try: 
             potentialBuy = pickle.load(file)
             file.close()
 
             print(potentialBuy)
 
-        except:
+        except FileNotFoundError:
             print('Not found! Scanning...')
             tickerUtils._tickerScan()
             file = open(filePath, 'rb')
             potentialBuy = pickle.load(file)
             file.close()
             print(potentialBuy)
-            return
         
 
     if args.show_tickers:
