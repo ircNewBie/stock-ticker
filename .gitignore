@@ -1,5 +1,5 @@
 ticker-env/*
-config/*.json
+config/config.json
 src/utils/__pycache__/*
 src/utils/__pycache__
 src/utils/*.pyc
